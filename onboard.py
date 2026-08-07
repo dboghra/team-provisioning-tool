@@ -1,6 +1,13 @@
+from validate_data import validate_csv
+
+
+
 #load .env
 #load config file(represents each team)
-# extract data from config(repo name, team name, members, etc)
+
 #validate config data
+valid_rows, error_rows = validate_csv("config.csv")
+
+
 #call provisioner to create repo and add members
 
