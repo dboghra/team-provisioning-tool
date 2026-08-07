@@ -1,7 +1,6 @@
-project_name
-repo_name
-description
-members
-member_roles
-member_email
-
+project_name,repo_name,description,members,github_username,member_roles,member_email
+"AI Assistant","ai-assistant","LLM chatbot","Dreshta Boghra","dboghra","admin","boghra.d@northeastern.edu"
+"AI Assistant","ai-assistant","LLM chatbot","Anusha N","anuu1","developer","anushan@northeastern.edu"
+"Data Pipeline","data-pipeline","ETL workflow","Alex B","aleb12","developer","b.alex@gmail.com"
+"Frontend UI","frontend-ui","React app","Chelsea K","chelsss67","admin","chelsssss@school.edu"
+"Frontend UI","frontend-ui","React app","Ollie B","imaginecubes11","developer","oliverb@northeastern.edu"
