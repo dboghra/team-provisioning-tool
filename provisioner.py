@@ -136,7 +136,6 @@ def provision_all_teams(valid_rows, token, org, templates_path):
     """
     repos_created = set()
     repos_protected = set()
-    repos_templated = set()
 
     successes = []
     failures = []
