@@ -21,7 +21,9 @@ def create_repo(org, repo_name, description, token):
     """
     try:
         g = Github(auth=Auth.Token(token))
-        g.get_user().create_repo(repo_name, description=description, private=True)
+        repo = g.get_user().create_repo(repo_name, description=description, private=True)
+        repo.create_file("README.md", "Initial commit", "# " + repo_name) #create branch and readme
+
         message = f"Created repo '{repo_name}'"
         logging.info(message)
         return True, message
@@ -104,51 +106,6 @@ def set_branch_protections(org, repo_name, token):
         return False, message
 
 
-def commit_template(org, repo_name, template_path, token):
-    """
-    Read run-test.yml from the templates folder and commit it to
-    .github/workflows/run-test.yml in the repo.
-
-    Args:
-        org: GitHub organization name
-        repo_name: name of the repo
-        template_path: path to the folder containing run-test.yml
-        token: GitHub personal access token
-
-    Returns:
-        (success: bool, message: str)
-    """
-    file_path = os.path.join(template_path, "run-test.yml")
-    try:
-        with open(file_path, "rb") as f:
-            raw_content = f.read()
-        encoded_content = base64.b64encode(raw_content).decode("utf-8")
-
-        g = Github(auth=Auth.Token(token))
-        repo = g.get_repo(f"{org}/{repo_name}")
-        repo.create_file(
-            ".github/workflows/run-test.yml",
-            "Add run-test.yml workflow",
-            encoded_content,
-            branch="main",
-        )
-        message = f"Committed run-test.yml to '{repo_name}'"
-        logging.info(message)
-        return True, message
-    except FileNotFoundError:
-        message = f"Template file not found at '{file_path}'"
-        logging.error(message)
-        return False, message
-    except GithubException as e:
-        message = f"Failed to commit template to '{repo_name}': {e.data.get('message', str(e))}"
-        logging.error(message)
-        return False, message
-    except Exception as e:
-        message = f"Unexpected error committing template to '{repo_name}': {e}"
-        logging.error(message)
-        return False, message
-
-
 def _record(repo_name, action, success, message, member=None):
     """Build a success/failure tracking dict for one provisioning action."""
     record = {"repo_name": repo_name, "action": action}
@@ -206,14 +163,6 @@ def provision_all_teams(valid_rows, token, org, templates_path):
             record = _record(repo_name, "set_branch_protections", success, message)
             (successes if success else failures).append(record)
             if success:
-                repos_protected.add(repo_name)
-
-        if repo_name not in repos_templated:
-            success, message = commit_template(org, repo_name, templates_path, token)
-            record = _record(repo_name, "commit_template", success, message)
-            (successes if success else failures).append(record)
-            if success:
-                repos_templated.add(repo_name)
+                repos_protected.add(repo_name) 
 
     return successes, failures
- 

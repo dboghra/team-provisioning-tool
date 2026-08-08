@@ -17,6 +17,44 @@ load_dotenv()
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+def write_archive_log(successes, failures):
+    """Write provisioning results to archive.log"""
+    try:
+        with open("archive.log", "w") as f:
+            f.write("=" * 60 + "\n")
+            f.write("PROVISIONING RESULTS\n")
+            f.write("=" * 60 + "\n\n")
+            
+            f.write(f"Total Successes: {len(successes)}\n")
+            f.write(f"Total Failures: {len(failures)}\n\n")
+            
+            if successes:
+                f.write("SUCCESSES:\n")
+                f.write("-" * 60 + "\n")
+                for success in successes:
+                    repo = success['repo_name']
+                    action = success['action']
+                    details = success['details']
+                    f.write(f" {repo} - {action}\n")
+                    f.write(f"  {details}\n\n")
+            
+            if failures:
+                f.write("\nFAILURES:\n")
+                f.write("-" * 60 + "\n")
+                for failure in failures:
+                    repo = failure['repo_name']
+                    action = failure['action']
+                    error = failure['error']
+                    f.write(f"✗ {repo} - {action}\n")
+                    f.write(f"  Error: {error}\n\n")
+        
+        print(f"\n Archive log written to archive.log")
+    except Exception as e:
+        print(f"ERROR: Failed to write archive log: {e}")
+
+
+
+
 
 
 def main():
@@ -66,6 +104,8 @@ def main():
         for failure in failures:
             print(f"  - {failure['repo_name']}: {failure['action']} - {failure['error']}")
 
+
+    write_archive_log(successes, failures)
 
 
 if __name__ == "__main__":
