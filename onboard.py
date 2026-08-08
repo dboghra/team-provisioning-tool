@@ -2,7 +2,7 @@ import os
 import logging
 from github import Github
 from dotenv import load_dotenv
-#from validate_data import validate_csv
+from validate_data import validate_csv
 #from provisioner import provision_all_teams
 #call provisioner to create repo and add members
 
@@ -15,8 +15,7 @@ load_dotenv()
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-#validate config data
-#valid_rows, error_rows = validate_csv("config.csv")
+
 
 def main():
     # Test GitHub authentication
@@ -39,6 +38,9 @@ def main():
         return
     
     # TODO: Load and validate CSV
+    valid_rows, error_rows = validate_csv("config.csv")
+    print("valid_rows:", valid_rows)
+    print("error_rows:", error_rows)
     # TODO: Provision teams
     # TODO: Print summary
 
